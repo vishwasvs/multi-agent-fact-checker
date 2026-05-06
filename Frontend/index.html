@@ -225,6 +225,16 @@
       border-radius: 24px;
 
       padding: 24px;
+
+      transition: 0.3s;
+    }
+
+    .card:hover {
+
+      transform: translateY(-4px);
+
+      box-shadow:
+      0 10px 30px rgba(0,0,0,0.08);
     }
 
     .card-top {
@@ -317,6 +327,15 @@
 
     .fill-red {
       background: #dc2626;
+    }
+
+    .confidence {
+
+      margin-top: 10px;
+
+      color: #666;
+
+      font-size: 13px;
     }
 
     .verdict {
@@ -484,6 +503,13 @@
 
         </div>
 
+        <div
+          class="confidence"
+          id="supportConfidence"
+        >
+          0%
+        </div>
+
       </div>
 
       <!-- NEUTRAL -->
@@ -516,6 +542,13 @@
 
         </div>
 
+        <div
+          class="confidence"
+          id="neutralConfidence"
+        >
+          0%
+        </div>
+
       </div>
 
       <!-- CRITICAL -->
@@ -546,6 +579,13 @@
             id="criticalBar"
           ></div>
 
+        </div>
+
+        <div
+          class="confidence"
+          id="criticalConfidence"
+        >
+          0%
         </div>
 
       </div>
@@ -609,7 +649,7 @@
 
     <div class="footer">
 
-      FastAPI · Groq · MongoDB · Multi-Agent AI
+      FastAPI · Groq · Multi-Agent AI
 
     </div>
 
@@ -663,7 +703,7 @@
       try {
 
         const res = await fetch(
-          "http://localhost:8000/dissect",
+          "https://multi-agent-fact-checker.onrender.com/dissect",
           {
             method: "POST",
 
@@ -753,6 +793,23 @@
         ).style.width =
         data.agents.critical.confidence + "%";
 
+        // CONFIDENCE TEXT
+
+        document.getElementById(
+          "supportConfidence"
+        ).innerText =
+        data.agents.support.confidence + "% confidence";
+
+        document.getElementById(
+          "neutralConfidence"
+        ).innerText =
+        data.agents.neutral.confidence + "% confidence";
+
+        document.getElementById(
+          "criticalConfidence"
+        ).innerText =
+        data.agents.critical.confidence + "% confidence";
+
         // STATUS
 
         document.getElementById(
@@ -808,7 +865,6 @@
 
               data.agents.critical.confidence
             ]
-
           }]
         },
 
