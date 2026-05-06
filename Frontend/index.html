@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>VeritasAI</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+
+      font-family: 'Inter', sans-serif;
+
+      background: #f5f5f3;
+
+      color: #111;
+
+      min-height: 100vh;
+    }
+
+    .navbar {
+
+      width: 100%;
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      padding: 24px 48px;
+
+      border-bottom: 1px solid #e5e5e5;
+
+      background: rgba(255,255,255,0.8);
+
+      backdrop-filter: blur(10px);
+
+      position: sticky;
+
+      top: 0;
+
+      z-index: 100;
+    }
+
+    .logo {
+
+      font-size: 18px;
+
+      font-weight: 600;
+    }
+
+    .nav-right {
+
+      color: #666;
+
+      font-size: 14px;
+    }
+
+    .container {
+
+      max-width: 1200px;
+
+      margin: auto;
+
+      padding: 60px 20px;
+    }
+
+    .hero {
+
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+
+      font-size: 64px;
+
+      line-height: 1;
+
+      letter-spacing: -3px;
+
+      margin-bottom: 16px;
+
+      font-weight: 600;
+    }
+
+    .hero p {
+
+      font-size: 18px;
+
+      color: #666;
+
+      line-height: 1.8;
+
+      max-width: 700px;
+    }
+
+    .input-card {
+
+      background: white;
+
+      border: 1px solid #e5e5e5;
+
+      border-radius: 24px;
+
+      padding: 28px;
+
+      margin-bottom: 30px;
+    }
+
+    textarea {
+
+      width: 100%;
+
+      height: 140px;
+
+      border: none;
+
+      resize: none;
+
+      outline: none;
+
+      background: transparent;
+
+      font-size: 16px;
+
+      font-family: 'Inter', sans-serif;
+
+      line-height: 1.8;
+    }
+
+    textarea::placeholder {
+      color: #999;
+    }
+
+    .actions {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-top: 20px;
+    }
+
+    .status {
+
+      color: #666;
+
+      font-size: 14px;
+    }
+
+    button {
+
+      border: none;
+
+      background: #111;
+
+      color: white;
+
+      padding: 14px 22px;
+
+      border-radius: 14px;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      transition: 0.2s;
+    }
+
+    button:hover {
+
+      opacity: 0.9;
+    }
+
+    .grid {
+
+      display: grid;
+
+      grid-template-columns:
+      repeat(auto-fit,minmax(320px,1fr));
+
+      gap: 20px;
+    }
+
+    .card {
+
+      background: white;
+
+      border: 1px solid #e5e5e5;
+
+      border-radius: 24px;
+
+      padding: 24px;
+    }
+
+    .card-top {
+
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: center;
+
+      margin-bottom: 18px;
+    }
+
+    .agent-name {
+
+      font-size: 15px;
+
+      font-weight: 600;
+    }
+
+    .badge {
+
+      width: 10px;
+
+      height: 10px;
+
+      border-radius: 50%;
+    }
+
+    .green {
+      background: #16a34a;
+    }
+
+    .blue {
+      background: #2563eb;
+    }
+
+    .red {
+      background: #dc2626;
+    }
+
+    .gray {
+      background: #444;
+    }
+
+    .card-text {
+
+      color: #444;
+
+      line-height: 1.8;
+
+      font-size: 15px;
+
+      min-height: 120px;
+    }
+
+    .bar {
+
+      width: 100%;
+
+      height: 8px;
+
+      background: #efefef;
+
+      border-radius: 999px;
+
+      margin-top: 18px;
+
+      overflow: hidden;
+    }
+
+    .fill {
+
+      height: 100%;
+
+      width: 0%;
+
+      border-radius: 999px;
+
+      transition: 1s;
+    }
+
+    .fill-green {
+      background: #16a34a;
+    }
+
+    .fill-blue {
+      background: #2563eb;
+    }
+
+    .fill-red {
+      background: #dc2626;
+    }
+
+    .verdict {
+
+      margin-top: 30px;
+
+      background: white;
+
+      border: 1px solid #e5e5e5;
+
+      border-radius: 24px;
+
+      padding: 28px;
+    }
+
+    .verdict-title {
+
+      font-size: 13px;
+
+      color: #777;
+
+      text-transform: uppercase;
+
+      letter-spacing: 1px;
+
+      margin-bottom: 12px;
+    }
+
+    .verdict-result {
+
+      font-size: 42px;
+
+      font-weight: 600;
+
+      letter-spacing: -2px;
+
+      margin-bottom: 14px;
+    }
+
+    .verdict-summary {
+
+      color: #555;
+
+      line-height: 1.8;
+    }
+
+    .chart-card {
+
+      margin-top: 30px;
+
+      background: white;
+
+      border: 1px solid #e5e5e5;
+
+      border-radius: 24px;
+
+      padding: 28px;
+    }
+
+    .footer {
+
+      margin-top: 60px;
+
+      text-align: center;
+
+      color: #777;
+
+      font-size: 14px;
+
+      padding-bottom: 40px;
+    }
+
+    a {
+
+      color: #111;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="navbar">
+
+    <div class="logo">
+      VeritasAI
+    </div>
+
+    <div class="nav-right">
+      Multi-Agent Misinformation Engine
+    </div>
+
+  </div>
+
+  <div class="container">
+
+    <div class="hero">
+
+      <h1>
+        AI fact analysis.
+      </h1>
+
+      <p>
+        Multiple AI agents independently analyze,
+        debate, retrieve evidence, and produce
+        confidence-scored verdicts.
+      </p>
+
+    </div>
+
+    <div class="input-card">
+
+      <textarea
+        id="claimInput"
+        placeholder="Enter a claim to analyze..."
+      ></textarea>
+
+      <div class="actions">
+
+        <div
+          class="status"
+          id="status"
+        >
+          Ready
+        </div>
+
+        <button onclick="analyzeClaim()">
+          Analyze Claim
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      <!-- SUPPORT -->
+
+      <div class="card">
+
+        <div class="card-top">
+
+          <div class="agent-name">
+            Support Agent
+          </div>
+
+          <div class="badge green"></div>
+
+        </div>
+
+        <div
+          class="card-text"
+          id="supportText"
+        >
+          Waiting...
+        </div>
+
+        <div class="bar">
+
+          <div
+            class="fill fill-green"
+            id="supportBar"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <!-- NEUTRAL -->
+
+      <div class="card">
+
+        <div class="card-top">
+
+          <div class="agent-name">
+            Neutral Agent
+          </div>
+
+          <div class="badge blue"></div>
+
+        </div>
+
+        <div
+          class="card-text"
+          id="neutralText"
+        >
+          Waiting...
+        </div>
+
+        <div class="bar">
+
+          <div
+            class="fill fill-blue"
+            id="neutralBar"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <!-- CRITICAL -->
+
+      <div class="card">
+
+        <div class="card-top">
+
+          <div class="agent-name">
+            Critical Agent
+          </div>
+
+          <div class="badge red"></div>
+
+        </div>
+
+        <div
+          class="card-text"
+          id="criticalText"
+        >
+          Waiting...
+        </div>
+
+        <div class="bar">
+
+          <div
+            class="fill fill-red"
+            id="criticalBar"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <!-- EVIDENCE -->
+
+      <div class="card">
+
+        <div class="card-top">
+
+          <div class="agent-name">
+            Evidence
+          </div>
+
+          <div class="badge gray"></div>
+
+        </div>
+
+        <div
+          class="card-text"
+          id="evidenceText"
+        >
+          Waiting...
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- VERDICT -->
+
+    <div class="verdict">
+
+      <div class="verdict-title">
+        Final Verdict
+      </div>
+
+      <div
+        class="verdict-result"
+        id="verdictText"
+      >
+        —
+      </div>
+
+      <div
+        class="verdict-summary"
+        id="summaryText"
+      >
+        Awaiting analysis...
+      </div>
+
+    </div>
+
+    <!-- CHART -->
+
+    <div class="chart-card">
+
+      <canvas id="chart"></canvas>
+
+    </div>
+
+    <div class="footer">
+
+      FastAPI · Groq · MongoDB · Multi-Agent AI
+
+    </div>
+
+  </div>
+
+  <script>
+
+    let chart;
+
+    function typeEffect(text, elementId) {
+
+      const element =
+        document.getElementById(elementId);
+
+      element.innerHTML = "";
+
+      let i = 0;
+
+      function typing() {
+
+        if(i < text.length) {
+
+          element.innerHTML += text.charAt(i);
+
+          i++;
+
+          setTimeout(typing, 8);
+        }
+      }
+
+      typing();
+    }
+
+    async function analyzeClaim() {
+
+      const claim =
+        document.getElementById("claimInput").value;
+
+      if(!claim) {
+
+        alert("Enter a claim");
+
+        return;
+      }
+
+      document.getElementById(
+        "status"
+      ).innerText =
+      "Agents debating...";
+
+      try {
+
+        const res = await fetch(
+          "http://localhost:8000/dissect",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+              "application/json"
+            },
+
+            body: JSON.stringify({
+              text: claim
+            })
+          }
+        );
+
+        const data =
+          await res.json();
+
+        // SUPPORT
+
+        typeEffect(
+          data.agents.support.analysis,
+          "supportText"
+        );
+
+        // NEUTRAL
+
+        typeEffect(
+          data.agents.neutral.analysis,
+          "neutralText"
+        );
+
+        // CRITICAL
+
+        typeEffect(
+          data.agents.critical.analysis,
+          "criticalText"
+        );
+
+        // VERDICT
+
+        typeEffect(
+          data.judge.verdict,
+          "verdictText"
+        );
+
+        typeEffect(
+          data.judge.reasoning,
+          "summaryText"
+        );
+
+        // EVIDENCE
+
+        document.getElementById(
+          "evidenceText"
+        ).innerHTML = `
+
+          <b>${data.evidence.title}</b>
+
+          <br><br>
+
+          ${data.evidence.summary}
+
+          <br><br>
+
+          <a
+            href="${data.evidence.url}"
+            target="_blank"
+          >
+            View Source
+          </a>
+        `;
+
+        // BARS
+
+        document.getElementById(
+          "supportBar"
+        ).style.width =
+        data.agents.support.confidence + "%";
+
+        document.getElementById(
+          "neutralBar"
+        ).style.width =
+        data.agents.neutral.confidence + "%";
+
+        document.getElementById(
+          "criticalBar"
+        ).style.width =
+        data.agents.critical.confidence + "%";
+
+        // STATUS
+
+        document.getElementById(
+          "status"
+        ).innerText =
+        "Analysis complete";
+
+        renderChart(data);
+
+      }
+
+      catch(err) {
+
+        document.getElementById(
+          "status"
+        ).innerText =
+        "Error occurred";
+
+        alert(err.message);
+      }
+    }
+
+    function renderChart(data) {
+
+      const ctx =
+        document.getElementById("chart");
+
+      if(chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(ctx, {
+
+        type: "bar",
+
+        data: {
+
+          labels: [
+            "Support",
+            "Neutral",
+            "Critical"
+          ],
+
+          datasets: [{
+
+            label: "Confidence",
+
+            data: [
+
+              data.agents.support.confidence,
+
+              data.agents.neutral.confidence,
+
+              data.agents.critical.confidence
+            ]
+
+          }]
+        },
+
+        options: {
+
+          responsive: true,
+
+          plugins: {
+
+            legend: {
+              display: false
+            }
+          },
+
+          scales: {
+
+            y: {
+
+              beginAtZero: true,
+
+              max: 100
+            }
+          }
+        }
+      });
+    }
+
+  </script>
+
+</body>
+</html>
