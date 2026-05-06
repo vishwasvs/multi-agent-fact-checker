@@ -52,13 +52,13 @@ ai_client = OpenAI(
 # MONGODB
 # =========================================
 
-mongo_client = MongoClient(
-    "mongodb://localhost:27017/"
-)
+# mongo_client = MongoClient(
+#     "mongodb://localhost:27017/"
+# )
 
-db = mongo_client["fact_checker"]
+# db = mongo_client["fact_checker"]
 
-collection = db["claims"]
+# collection = db["claims"]
 
 # =========================================
 # REQUEST MODEL
