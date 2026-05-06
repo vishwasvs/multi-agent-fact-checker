@@ -3,4 +3,4 @@ uvicorn
 openai
 python-dotenv
 pymongo
-wikipediagit 
+wikipedia
