@@ -1,14 +1,12 @@
 import os
 import json
 import asyncio
-import datetime
 import wikipedia
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from pymongo import MongoClient
 from openai import OpenAI
 
 # =========================================
@@ -49,18 +47,6 @@ ai_client = OpenAI(
 )
 
 # =========================================
-# MONGODB
-# =========================================
-
-# mongo_client = MongoClient(
-#     "mongodb://localhost:27017/"
-# )
-
-# db = mongo_client["fact_checker"]
-
-# collection = db["claims"]
-
-# =========================================
 # REQUEST MODEL
 # =========================================
 
@@ -72,7 +58,6 @@ class Claim(BaseModel):
 # =========================================
 
 @app.get("/")
-
 async def home():
 
     return {
@@ -101,7 +86,7 @@ def get_evidence(claim):
 
         summary = wikipedia.summary(
             page.title,
-            sentences=4
+            sentences=3
         )
 
         return {
@@ -140,7 +125,9 @@ async def support_agent(claim, evidence):
                 "content": """
                 You strongly support the claim.
 
-                Return ONLY JSON:
+                Return ONLY valid JSON.
+
+                Format:
 
                 {
                   "analysis":"",
@@ -148,12 +135,7 @@ async def support_agent(claim, evidence):
                   "evidence_used":""
                 }
 
-                Keep analysis under 45 words.
-
-                Explain:
-                - reasoning
-                - evidence usage
-                - why confidence exists
+                Keep response concise.
                 """
             },
 
@@ -198,7 +180,9 @@ async def neutral_agent(claim, evidence):
                 "content": """
                 Stay balanced and neutral.
 
-                Return ONLY JSON:
+                Return ONLY valid JSON.
+
+                Format:
 
                 {
                   "analysis":"",
@@ -206,12 +190,7 @@ async def neutral_agent(claim, evidence):
                   "evidence_used":""
                 }
 
-                Keep analysis under 45 words.
-
-                Explain:
-                - reasoning
-                - evidence usage
-                - uncertainty
+                Keep response concise.
                 """
             },
 
@@ -256,7 +235,9 @@ async def critical_agent(claim, evidence):
                 "content": """
                 Criticize the claim.
 
-                Return ONLY JSON:
+                Return ONLY valid JSON.
+
+                Format:
 
                 {
                   "analysis":"",
@@ -264,12 +245,7 @@ async def critical_agent(claim, evidence):
                   "evidence_used":""
                 }
 
-                Keep analysis under 45 words.
-
-                Explain:
-                - weaknesses
-                - lack of evidence
-                - contradictions
+                Keep response concise.
                 """
             },
 
@@ -320,7 +296,9 @@ async def judge_agent(
 
                 Evaluate all agents.
 
-                Return ONLY JSON:
+                Return ONLY valid JSON.
+
+                Format:
 
                 {
                   "verdict":"",
@@ -328,12 +306,7 @@ async def judge_agent(
                   "reasoning":""
                 }
 
-                Explain:
-                - strongest argument
-                - why verdict was chosen
-                - uncertainty if present
-
-                Maximum 60 words.
+                Keep reasoning concise.
                 """
             },
 
@@ -364,7 +337,6 @@ async def judge_agent(
 # =========================================
 
 @app.post("/dissect")
-
 async def dissect_claim(claim: Claim):
 
     evidence = get_evidence(
@@ -415,14 +387,5 @@ async def dissect_claim(claim: Claim):
 
         "judge": judge
     }
-
-    collection.insert_one({
-
-        "claim": claim.text,
-
-        "result": result,
-
-        "timestamp": datetime.datetime.now()
-    })
 
     return result

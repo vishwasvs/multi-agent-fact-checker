@@ -2,5 +2,4 @@ fastapi
 uvicorn
 openai
 python-dotenv
-pymongo
 wikipedia
